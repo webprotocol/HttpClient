@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
+
+<!-- LoginService -->
+<bean id="loginService" class="com.hybrid.service.LoginService">
+    <property name="memberDao" ref="memberDao"/>
+</bean>
+
+<!-- CityListService -->
+<bean id="cityListService" class="com.hybrid.service.CityListService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>
+
+<!-- CityPageService -->
+<bean id="cityPageService" class="com.hybrid.service.CityPageService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>
+
+<!-- CityRegisterService -->
+<bean id="cityRegisterService" class="com.hybrid.service.CityRegisterService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>   
+
+<!-- CityDetailService -->
+<bean id="cityDetailService" class="com.hybrid.service.CityDetailService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>
+
+<!-- CityModifyService -->
+<bean id="cityModifyService" class="com.hybrid.service.CityModifyService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>
+
+<!-- CityUnRegisterService -->
+<bean id="cityUnRegisterService" class="com.hybrid.service.CityUnRegisterService">
+    <property name="cityDao" ref="cityDao"/>
+</bean>
+    
+</beans>

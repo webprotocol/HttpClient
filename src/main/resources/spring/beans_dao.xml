@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:oxm="http://www.springframework.org/schema/oxm"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/oxm http://www.springframework.org/schema/oxm/spring-oxm-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+<!-- LogAspect -->
+<aop:aspectj-autoproxy/>
+<bean class="com.hybrid.aspect.LogAspect"/>
+
+<!-- Oracle / MySQL -->
+<context:property-placeholder location="classpath:database/db.properties"/>
+
+<!-- TransactionManager -->
+<tx:annotation-driven transaction-manager="transactionManager"/>
+<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<property name="dataSource" ref="dataSource"/>
+</bean>
+
+<!-- DataSource -->
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+	<property name="driverClassName" value="${className}"/>
+	<property name="url" value="${url}"/>
+	<property name="username" value="${user}"/>
+	<property name="password">
+		<value>${password}</value>
+	</property>
+</bean>
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	<property name="dataSource" ref="dataSource"/>
+	<property name="databaseIdProvider">
+		<bean class="org.apache.ibatis.mapping.VendorDatabaseIdProvider">
+			<property name="properties">
+				<props>
+					<prop key="MySQL">mysql</prop>
+					<prop key="Oracle">oracle</prop>
+				</props>			
+			</property>
+		</bean>
+	</property>
+	
+<!-- 	<property name="mapperLocations"> -->
+<!-- 		<list> -->
+<!-- 			<value>classpath:com/hybrid/mapper/MemberMapper.xml</value> -->
+<!-- 		</list> -->
+<!-- 	</property> -->
+</bean>
+
+<!-- SqlSessionTemplate -->
+<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+	<constructor-arg ref="sqlSessionFactory"/>
+</bean>
+
+<!-- MemberMapper -->
+<bean id="memberMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<property name="mapperInterface" value="com.hybrid.mapper.MemberMapper"/>
+	<property name="sqlSessionTemplate" ref="sqlSession"/>
+</bean>
+
+<!-- MemberDao -->
+<bean id="memberDao" class="com.hybrid.dao.MemberDao">
+	<property name="memmberMapper" ref="memberMapper"/>
+</bean>
+
+<!-- CityMapper -->
+<bean id="cityMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+	<property name="mapperInterface" value="com.hybrid.mapper.CityMapper"/>
+	<property name="sqlSessionTemplate" ref="sqlSession"/>
+</bean>
+<!-- CityDao -->
+<bean id="cityDao" class="com.hybrid.dao.CityDao">
+	<property name="cityMapper" ref="cityMapper"/>
+</bean>
+
+</beans>
